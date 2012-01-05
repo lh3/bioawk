@@ -33,6 +33,7 @@ const char	*version = "version 20110810";
 #include <signal.h>
 #include "awk.h"
 #include "ytab.h"
+#include "addon.h"
 
 extern	char	**environ;
 extern	int	nfields;
@@ -141,6 +142,9 @@ int main(int argc, char *argv[])
 			if (dbg == 0)
 				dbg = 1;
 			printf("awk %s\n", version);
+			break;
+		case 'c':
+			lh3_has_colnm = 1;
 			break;
 		default:
 			WARNING("unknown option %s ignored", argv[1]);

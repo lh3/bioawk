@@ -22,7 +22,7 @@
 # THIS SOFTWARE.
 # ****************************************************************/
 
-CFLAGS = -O2 -Wall
+CFLAGS = -g -Wall -O2
 
 CC = gcc
 
@@ -30,13 +30,13 @@ YACC = bison -y
 YACC = yacc
 YFLAGS = -d
 
-OFILES = b.o main.o parse.o proctab.o tran.o lib.o run.o lex.o
+OFILES = b.o main.o parse.o proctab.o tran.o lib.o run.o lex.o addon.o
 
 SOURCE = awk.h ytab.c ytab.h proto.h awkgram.y lex.c b.c main.c \
-	maketab.c parse.c lib.c run.c tran.c proctab.c 
+	maketab.c parse.c lib.c run.c tran.c proctab.c addon.c
 
 LISTING = awk.h proto.h awkgram.y lex.c b.c main.c maketab.c parse.c \
-	lib.c run.c tran.c 
+	lib.c run.c tran.c addon.c
 
 SHIP = README FIXES $(SOURCE) ytab[ch].bak makefile  \
 	 awk.1
@@ -44,7 +44,7 @@ SHIP = README FIXES $(SOURCE) ytab[ch].bak makefile  \
 awk:	ytab.o $(OFILES)
 	$(CC) $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o awk -lm
 
-$(OFILES):	awk.h ytab.h proto.h
+$(OFILES):	awk.h ytab.h proto.h addon.h
 
 ytab.o:	awk.h proto.h awkgram.y
 	$(YACC) $(YFLAGS) awkgram.y
@@ -62,4 +62,4 @@ names:
 	@echo $(LISTING)
 
 clean:
-	rm -f a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda awk ytab.* proctab.c
+	rm -fr a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda awk ytab.* proctab.c *.dSYM
