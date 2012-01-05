@@ -31,6 +31,7 @@ static void set_colnm_aux(const char *p, int col)
 int bio_get_fmt(const char *s)
 {
 	int i, j;
+	if (strcmp(s, "hdr") == 0) return BIO_HDR;
 	for (i = 0; col_defs[i][0]; ++i)
 		if (strcmp(s, col_defs[i][0]) == 0) return i;
 	for (i = 1; col_defs[i][0]; ++i) {
