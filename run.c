@@ -187,14 +187,17 @@ Cell *program(Node **a, int n)	/* execute an awk program */
 			FATAL("illegal break, continue, next or nextfile from BEGIN");
 		tempfree(x);
 	}
-	if (a[1] || a[2])
+	if (a[1] || a[2]) {
+		if (bio_fmt > BIO_HDR) bio_set_colnm();
 		while (getrec(&record, &recsize, 1) > 0) {
-			if (bio_col_defn != NULL && (int)(*NR + .499) == 1) bio_set_colnm();
+			if (bio_skip_hdr(record)) continue;
+			if (bio_fmt == BIO_HDR && (int)(*NR + .499) == 1) bio_set_colnm();
 			x = execute(a[1]);
 			if (isexit(x))
 				break;
 			tempfree(x);
 		}
+	}
   ex:
 	if (setjmp(env) != 0)	/* handles exit within END */
 		goto ex1;

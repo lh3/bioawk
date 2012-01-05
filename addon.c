@@ -4,24 +4,18 @@
 #include "awk.h"
 #include "addon.h"
 
-const char *bio_col_defn = NULL;
+int bio_flag = 0, bio_fmt = BIO_NULL;
 
-static const char *valid_coldefs[] = {"header", "bed", "sam", "vcf", "gff", NULL};
+static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memory efficient. Shouldn't matter. */
+	{"header", NULL},
+	{"bed", "chrom", "start", "end", "name", "score", "strand", "thickstart", "thickend", "rgb", "blockcount", "blocksizes", "blockstarts", NULL},
+	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", NULL},
+	{"vcf", "chrom", "pos", "id", "ref", "alt", "qual", "filter" "info", NULL},
+	{"gff", "seqname", "source", "feature", "start", "end", "score", "filter", "strand", "group", "attribute", NULL},
+	{NULL}
+};
 
-/*BED*/
-static const char *bed_coldefs[] = {"chrom", "start", "end", 
-	"name", "score", "strand", "thickstart", "thickend", "rgb",
-	"blockcount", "blocksizes", "blockstarts", NULL};
-/*SAM*/
-static const char *sam_coldefs[] = {"qname", "flag", "rname",
-	"pos", "mapq", "cigar", "rnext", "pnext", "tlen",
-	"seq", "qual", NULL};
-/*VCF*/
-static const char *vcf_coldefs[] = {"chrom", "pos", "id",
-	"ref", "alt", "qual", "filter" "info", NULL};
-/*GFF/GTF*/
-static const char *gff_coldefs[] = {"seqname", "source", "feature", 
-	"start", "end", "score", "filter", "strand", "group", "attribute", NULL};
+static const char *tab_delim = "nyyyyn", *hdr_chr = "\0#@##\0";
 
 static void set_colnm_aux(const char *p, int col)
 {
@@ -34,58 +28,36 @@ static void set_colnm_aux(const char *p, int col)
 		x->tval = NUM, x->fval = col;
 }
 
-int bio_isvalid_coldef(const char *request)
+int bio_get_fmt(const char *s)
 {
-	int i;
-	for (i = 0; valid_coldefs[i] != NULL; ++i)
-		if (strcmp(request, valid_coldefs[i]) == 0)
-			return 1;
-	return 0;
+	int i, j;
+	for (i = 0; col_defs[i][0]; ++i)
+		if (strcmp(s, col_defs[i][0]) == 0) return i;
+	for (i = 1; col_defs[i][0]; ++i) {
+		printf("%s:\n\t", col_defs[i][0]);
+		for (j = 1; col_defs[i][j]; ++j)
+			printf("%d:%s ", j, col_defs[i][j]);
+		putchar('\n');
+	}
+	return BIO_NULL;
 }
 
-void bio_print_valid_coldefs() 
+int bio_skip_hdr(const char *r)
 {
-	int i;
-	printf("valid -c options include:\n");
-	for (i = 0; valid_coldefs[i] != NULL; ++i) {
-		const char *option = valid_coldefs[i];
-		printf("  %d. \"%s\"\n", i+1,option);
-
-		if (strcmp(option, "header") == 0)
-			printf("    input should contain a col. defn header as first line\n");
-		else if (strcmp(option, "bed") == 0) {
-			int j;
-			for (j = 0; bed_coldefs[j] != NULL; ++j)
-				printf("    %s: column $%d\n", bed_coldefs[j], j+1);
-		}
-		else if (strcmp(option, "sam") == 0) {
-			int j;
-			for (j = 0; sam_coldefs[j] != NULL; ++j)
-				printf("    %s: column $%d\n", sam_coldefs[j], j+1);
-		}
-		else if (strcmp(option, "vcf") == 0) {
-			int j;
-			for (j = 0; vcf_coldefs[j] != NULL; ++j)
-				printf("    %s: column $%d\n", vcf_coldefs[j], j+1);
-		}
-		else if (strcmp(option, "gff") == 0) {
-			int j;
-			for (j = 0; gff_coldefs[j] != NULL; ++j)
-				if (strcmp(gff_coldefs[j], "attribute") != 0)
-					printf("    %s: column $%d\n", gff_coldefs[j], j+1);
-				else
-					printf("    %s: column $%d\n", gff_coldefs[j], j);
-		}
-	}
+	if (bio_fmt <= BIO_HDR) return 0;
+	if (*r && *r == hdr_chr[bio_fmt]) {
+		if (bio_flag & BIO_SHOW_HDR) puts(r);
+		return 1;
+	} else return 0;
 }
 
 void bio_set_colnm()
 {
-	if (bio_col_defn == NULL) return;
-
-	if (strcmp(bio_col_defn, "header") == 0) {
+	int i;
+	if (bio_fmt == BIO_NULL) {
+		return;
+	} else if (bio_fmt == BIO_HDR) {
 		char *p, *q, c;
-		int i;
 		for (p = record; *p && isspace(*p); ++p); /* skip leading spaces */
 		for (i = 1, q = p; *q; ++q) {
 			if (!isspace(*q)) continue;
@@ -98,54 +70,9 @@ void bio_set_colnm()
 			q = p;
 		}
 		set_colnm_aux(p, i); /* the last column */
-	} 
-	else if (strcmp(bio_col_defn, "bed") == 0) {
-		int i;
-		for (i = 0; bed_coldefs[i] != NULL; ++i)
-			set_colnm_aux(bed_coldefs[i], i+1);
-		// force tab delimited input and output
-		*FS = "\t";
-		*OFS = "\t";
-	}
-	else if (strcmp(bio_col_defn, "sam") == 0) {
-		int i;
-		for (i = 0; sam_coldefs[i] != NULL; ++i)
-			set_colnm_aux(sam_coldefs[i], i+1);
-		// force tab delimited input and output
-		*FS = "\t";
-		*OFS = "\t";
-		// auto-report any header lines
-		while (getrec(&record, &recsize, 1) > 0 && record[0] == '@') {
-			printf("%s\n", record);
-		}
-	}
-	else if (strcmp(bio_col_defn, "vcf") == 0) {
-		int i;
-		for (i = 0; vcf_coldefs[i] != NULL; ++i)
-			set_colnm_aux(vcf_coldefs[i], i+1);
-		// todo: any intelligent way to handle genotypes?
-		// force tab delimited input and output
-		*FS = "\t";
-		*OFS = "\t";
-		// auto-report any header lines
-		while (getrec(&record, &recsize, 1) > 0 && record[0] == '#') {
-			printf("%s\n", record);
-		}
-	}
-	else if (strcmp(bio_col_defn, "gff") == 0 || strcmp(bio_col_defn, "gtf") == 0) {
-		int i;
-		for (i = 0; gff_coldefs[i] != NULL; ++i)
-			// allow "group" and "attribute" to be the ninth column
-			if (strcmp(bio_col_defn, "attribute") != 0)
-				set_colnm_aux(gff_coldefs[i], i+1);
-			else
-				set_colnm_aux(gff_coldefs[i], i);
-		// force tab delimited input and output
-		*FS = "\t";
-		*OFS = "\t";
-		// auto-report any header lines
-		while (getrec(&record, &recsize, 1) > 0 && record[0] == '#') {
-			printf("%s\n", record);
-		}
+	} else {
+		for (i = 0; col_defs[bio_fmt][i] != NULL; ++i)
+			set_colnm_aux(col_defs[bio_fmt][i], i);
+		if (tab_delim[bio_fmt] == 'y') *FS = *OFS = "\t";
 	}
 }

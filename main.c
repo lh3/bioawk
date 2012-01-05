@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 	cmdname = argv[0];
 	if (argc == 1) {
 		fprintf(stderr, 
-		  "usage: %s [-F fs] [-v var=value] [-f progfile | 'prog'] [file ...]\n", 
+		  "usage: %s [-F fs] [-v var=value] [-c fmt] [-H] [-f progfile | 'prog'] [file ...]\n", 
 		  cmdname);
 		exit(1);
 	}
@@ -143,19 +143,17 @@ int main(int argc, char *argv[])
 				dbg = 1;
 			printf("awk %s\n", version);
 			break;
+		case 'H':
+			bio_flag |= BIO_SHOW_HDR;
+			break;
 		case 'c':
 			if (argv[1][2] != 0) {	/* arg is -csomething */
-				bio_col_defn = &argv[1][2];
+				if ((bio_fmt = bio_get_fmt(&argv[1][2])) == BIO_NULL) return 1;
 			} else {		/* arg is -c something */
 				argc--; argv++;
 				if (argc <= 1)
 					FATAL("no variable name");
-				if (!bio_isvalid_coldef(argv[1]) || strcmp(argv[1], "help") == 0) {
-				    bio_print_valid_coldefs();
-                    exit(1);
-                }
-				else
-                    bio_col_defn = argv[1];
+				if ((bio_fmt = bio_get_fmt(argv[1])) == BIO_NULL) return 1;
 			}
 			break;
 		default:
