@@ -145,17 +145,17 @@ int main(int argc, char *argv[])
 			break;
 		case 'c':
 			if (argv[1][2] != 0) {	/* arg is -csomething */
-				lh3_col_defn = &argv[1][2];
+				bio_col_defn = &argv[1][2];
 			} else {		/* arg is -c something */
 				argc--; argv++;
 				if (argc <= 1)
 					FATAL("no variable name");
-				if (!isvalid_coldef(argv[1]) || strcmp(argv[1], "help") == 0) {
-				    print_valid_coldefs();
+				if (!bio_isvalid_coldef(argv[1]) || strcmp(argv[1], "help") == 0) {
+				    bio_print_valid_coldefs();
                     exit(1);
                 }
 				else
-                    lh3_col_defn = argv[1];
+                    bio_col_defn = argv[1];
 			}
 			break;
 		default:
