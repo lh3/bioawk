@@ -189,7 +189,7 @@ Cell *program(Node **a, int n)	/* execute an awk program */
 	}
 	if (a[1] || a[2])
 		while (getrec(&record, &recsize, 1) > 0) {
-			if (lh3_has_colnm && (int)(*NR + .499) == 1) lh3_set_colnm();
+			if (lh3_col_defn != NULL && (int)(*NR + .499) == 1) lh3_set_colnm();
 			x = execute(a[1]);
 			if (isexit(x))
 				break;

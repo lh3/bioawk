@@ -58,7 +58,7 @@ int	safe	= 0;	/* 1 => "safe" mode */
 int main(int argc, char *argv[])
 {
 	const char *fs = NULL;
-
+	
 	setlocale(LC_CTYPE, "");
 	setlocale(LC_NUMERIC, "C"); /* for parsing cmdline & prog */
 	cmdname = argv[0];
@@ -144,7 +144,19 @@ int main(int argc, char *argv[])
 			printf("awk %s\n", version);
 			break;
 		case 'c':
-			lh3_has_colnm = 1;
+			if (argv[1][2] != 0) {	/* arg is -csomething */
+				lh3_col_defn = &argv[1][2];
+			} else {		/* arg is -c something */
+				argc--; argv++;
+				if (argc <= 1)
+					FATAL("no variable name");
+				if (!isvalid_coldef(argv[1]) || strcmp(argv[1], "help") == 0) {
+				    print_valid_coldefs();
+                    exit(1);
+                }
+				else
+                    lh3_col_defn = argv[1];
+			}
 			break;
 		default:
 			WARNING("unknown option %s ignored", argv[1]);
