@@ -23,6 +23,7 @@ THIS SOFTWARE.
 ****************************************************************/
 
 #include <assert.h>
+#include "addon.h"
 
 typedef double	Awkfloat;
 

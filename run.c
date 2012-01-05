@@ -33,7 +33,6 @@ THIS SOFTWARE.
 #include <time.h>
 #include "awk.h"
 #include "ytab.h"
-#include "addon.h"
 
 #define tempfree(x)	if (istemp(x)) tfree(x); else
 
@@ -1562,6 +1561,10 @@ Cell *bltin(Node **a, int n)	/* builtin functions. a[0] is type, a[1] is arg lis
 			u = fflush(fp);
 		break;
 	default:	/* can't happen */
+		if ((y = bio_func(t, x, a)) != 0) {
+			tempfree(x);
+			return y;
+		}
 		FATAL("illegal function type %d", t);
 		break;
 	}

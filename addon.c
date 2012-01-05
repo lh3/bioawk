@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "awk.h"
-#include "addon.h"
 
 int bio_flag = 0, bio_fmt = BIO_NULL;
 
@@ -76,4 +75,24 @@ void bio_set_colnm()
 			set_colnm_aux(col_defs[bio_fmt][i], i);
 		if (tab_delim[bio_fmt] == 'y') *FS = *OFS = "\t";
 	}
+}
+
+#define tempfree(x)   if (istemp(x)) tfree(x); else
+
+Cell *bio_func(int f, Cell *x, Node **a)
+{
+	Cell *y, *z;
+	y = gettemp();
+	if (f == BIO_FAND) {
+		if (a[1]->nnext == 0) {
+			WARNING("and requires two arguments; returning 0.0");
+			setfval(y, 0.0);
+		} else {
+			z = execute(a[1]->nnext);
+			setfval(y, (Awkfloat)((long)getfval(x) & (long)getfval(z)));
+			tempfree(z);
+		}
+	}
+	// else: never happens
+	return y;
 }
