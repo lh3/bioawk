@@ -145,7 +145,30 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			tmp = comp_tab[(int)buf[i]], buf[i] = comp_tab[(int)buf[l-1-i]], buf[l-1-i] = tmp;
 		if (l&1) buf[l>>1] = comp_tab[(int)buf[l>>1]];
 		setsval(y, buf);
+	} else if (f == BIO_FGC) {
+	    char *buf = getsval(x);
+	    int i, l, gc = 0;
+	    l = strlen(buf);
+	    if (l) { /* don't try for empty strings */
+	        for (i = 0; i < l; ++i)
+	            if (buf[i] == 'g' || buf[i] == 'c' ||
+	                buf[i] == 'G' || buf[i] == 'C')
+	                gc++;
+	        sprintf(buf, "%f", (Awkfloat)gc / (Awkfloat)l);
+	        setsval(y, buf);
+	    }
+	} else if (f == BIO_FMEANQUAL) {
+	    char *buf = getsval(x);
+	    int i, l, total_qual = 0;
+	    l = strlen(buf);
+	    if (l) { /* don't try for empty strings */
+	        for (i = 0; i < l; ++i)
+				total_qual += buf[i] - 33;
+	        sprintf(buf, "%f", (Awkfloat)total_qual / (Awkfloat)l);
+	        setsval(y, buf);
+	    }
 	}
+	
 	// else: never happens
 	return y;
 }
