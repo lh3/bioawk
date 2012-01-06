@@ -17,7 +17,15 @@ functionality:
 
    awk -c fastx '{print ">"$name;print revcomp($seq)}' seq.fa.gz 
 
-4. Take column name from the first line (where "age" appears in the first line
+4. Get the %GC from FASTA:
+
+   awk -c fastx '{print ">"$name;print gc($seq)}' seq.fa.gz
+
+5. Get the mean Phred quality score from FASTQ:
+
+   awk -c fastx '{print ">"$name;print meanqual($qual)}' seq.fq.gz
+
+6. Take column name from the first line (where "age" appears in the first line
    of input.txt):
 
    awk -c header '{print $age}' input.txt
