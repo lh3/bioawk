@@ -77,6 +77,17 @@ void bio_set_colnm()
 	}
 }
 
+static char comp_tab[] = {
+	  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,
+	 16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,
+	 32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+	 48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+	 64, 'T', 'V', 'G', 'H', 'E', 'F', 'C', 'D', 'I', 'J', 'M', 'L', 'K', 'N', 'O',
+	'P', 'Q', 'Y', 'S', 'A', 'A', 'B', 'W', 'X', 'R', 'Z',  91,  92,  93,  94,  95,
+	 64, 't', 'v', 'g', 'h', 'e', 'f', 'c', 'd', 'i', 'j', 'm', 'l', 'k', 'n', 'o',
+	'p', 'q', 'y', 's', 'a', 'a', 'b', 'w', 'x', 'r', 'z', 123, 124, 125, 126, 127
+};
+
 #define tempfree(x)   if (istemp(x)) tfree(x); else
 
 Cell *bio_func(int f, Cell *x, Node **a)
@@ -89,9 +100,42 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			setfval(y, 0.0);
 		} else {
 			z = execute(a[1]->nnext);
-			setfval(y, (Awkfloat)((long)getfval(x) & (long)getfval(z)));
+			setfval(y, (Awkfloat)((long)getfval(x) & (long)getfval(z))); // FIXME: does (long) always work???
 			tempfree(z);
 		}
+	} else if (f == BIO_FOR) {
+		if (a[1]->nnext == 0) {
+			WARNING("or requires two arguments; returning 0.0");
+			setfval(y, 0.0);
+		} else {
+			z = execute(a[1]->nnext);
+			setfval(y, (Awkfloat)((long)getfval(x) | (long)getfval(z)));
+			tempfree(z);
+		}
+	} else if (f == BIO_FXOR) {
+		if (a[1]->nnext == 0) {
+			WARNING("xor requires two arguments; returning 0.0");
+			setfval(y, 0.0);
+		} else {
+			z = execute(a[1]->nnext);
+			setfval(y, (Awkfloat)((long)getfval(x) | (long)getfval(z)));
+			tempfree(z);
+		}
+	} else if (f == BIO_FREVERSE) {
+		char *buf = getsval(x);
+		int i, l, tmp;
+		l = strlen(buf);
+		for (i = 0; i < l>>1; ++i)
+			tmp = buf[i], buf[i] = buf[l-1-i], buf[l-1-i] = tmp;
+		setsval(y, buf);
+	} else if (f == BIO_FREVCOMP) {
+		char *buf = getsval(x);
+		int i, l, tmp;
+		l = strlen(buf);
+		for (i = 0; i < l>>1; ++i)
+			tmp = comp_tab[(int)buf[i]], buf[i] = comp_tab[(int)buf[l-1-i]], buf[l-1-i] = tmp;
+		if (l&1) buf[l>>1] = comp_tab[(int)buf[l>>1]];
+		setsval(y, buf);
 	}
 	// else: never happens
 	return y;

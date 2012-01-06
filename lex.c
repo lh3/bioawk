@@ -47,7 +47,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "BEGIN",	XBEGIN,		XBEGIN },
 	{ "END",	XEND,		XEND },
 	{ "NF",		VARNF,		VARNF },
-	{ "and",    BIO_FAND,   BLTIN },
+	{ "and",	BIO_FAND,	BLTIN },
 	{ "atan2",	FATAN,		BLTIN },
 	{ "break",	BREAK,		BREAK },
 	{ "close",	CLOSE,		CLOSE },
@@ -73,10 +73,13 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "match",	MATCHFCN,	MATCHFCN },
 	{ "next",	NEXT,		NEXT },
 	{ "nextfile",	NEXTFILE,	NEXTFILE },
+	{ "or",		BIO_FOR,	BLTIN },
 	{ "print",	PRINT,		PRINT },
 	{ "printf",	PRINTF,		PRINTF },
 	{ "rand",	FRAND,		BLTIN },
 	{ "return",	RETURN,		RETURN },
+	{ "revcomp",BIO_FREVCOMP, BLTIN },
+	{ "reverse",BIO_FREVERSE, BLTIN },
 	{ "sin",	FSIN,		BLTIN },
 	{ "split",	SPLIT,		SPLIT },
 	{ "sprintf",	SPRINTF,	SPRINTF },
@@ -88,6 +91,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "tolower",	FTOLOWER,	BLTIN },
 	{ "toupper",	FTOUPPER,	BLTIN },
 	{ "while",	WHILE,		WHILE },
+	{ "xor",	BIO_FXOR,	BLTIN },
 };
 
 #define	RET(x)	{ if(dbg)printf("lex %s\n", tokname(x)); return(x); }

@@ -25,7 +25,15 @@ void bio_set_colnm(void);
  * keywords array defined in lex.c. Remember to keep the array sorted. 3)
  * Implement the actual function in bio_func(). */
 
-#define BIO_FAND     101
+#define BIO_FAND      101
+#define BIO_FOR       102
+#define BIO_FXOR      103
+#define BIO_FLSHIFT   104 /* to add */
+#define BIO_FRSHIFT   105 /* to add */
+#define BIO_FCOMPL    106 /* to add */
+
+#define BIO_FREVERSE  201
+#define BIO_FREVCOMP  202
 
 struct Cell;
 struct Node;
