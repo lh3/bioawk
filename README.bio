@@ -23,6 +23,14 @@ functionality:
    awk -c header '{print $age}' input.txt
 
 
+Note that when "-c" is not specified and the new built-in functions are not
+used, bioawk should behave exactly the same as the original BWK awk. At least
+this is the intention. Bioawk also tries to minimize the modification to the
+original code base such that improvements in the future versions of BWK awk
+can be readily incorporated into bioawk (yes, Brian Kernighan is still
+maintaining his code).
+
+
 Bioawk may have the following limitations:
 
 1. To parse FASTA and FASTQ formats, bioawk replaces the line reading module of
@@ -31,7 +39,9 @@ Bioawk may have the following limitations:
    fail in corner cases. Thus when "-c" is not specified, awk falls back to the
    original line reading code and does not support gzip'ed input.
 
-2. When "-c fastx" is in use, three strings allocated in the new line reading
-   module are not freed in the end.
+2. When "-c" is in use, several strings allocated in the new line reading
+   module are not freed in the end. These will be reported by valgrind as
+   "still reachable". To some extend, these are not memory leaks.
+
 
 [1] http://www.cs.princeton.edu/~bwk/btl.mirror/
