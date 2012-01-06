@@ -8,6 +8,7 @@
 #define BIO_SAM  2
 #define BIO_VCF  3
 #define BIO_GFF  4
+#define BIO_SEQ  5
 
 #define BIO_SHOW_HDR 0x1
 

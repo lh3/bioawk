@@ -11,10 +11,11 @@ static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memo
 	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", NULL},
 	{"vcf", "chrom", "pos", "id", "ref", "alt", "qual", "filter" "info", NULL},
 	{"gff", "seqname", "source", "feature", "start", "end", "score", "filter", "strand", "group", "attribute", NULL},
+	{"seq", "name", "seq", "qual", NULL},
 	{NULL}
 };
 
-static const char *tab_delim = "nyyyyn", *hdr_chr = "\0#@##\0";
+static const char *tab_delim = "nyyyyyn", *hdr_chr = "\0#@##\0\0";
 
 /************************
  * Setting column names *
@@ -155,7 +156,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 
 #include <zlib.h> /* FIXME: it would be better to drop this dependency... */
 #include "kseq.h"
-KSEQ_INIT(gzFile, gzread)
+KSEQ_INIT2(, gzFile, gzread)
 
 static gzFile g_fp;
 static kseq_t *g_kseq;
@@ -223,7 +224,32 @@ getrec_start:
 			}
 			setfval(fnrloc, 0.0);
 		}
-		c = ks_getuntil(g_kseq->f, '\n', &g_str, &dret);
+		if (bio_fmt != BIO_SEQ) {
+			c = ks_getuntil(g_kseq->f, **RS, &g_str, &dret);
+		} else {
+			c = kseq_read(g_kseq);
+			if (c >= 0) {
+				g_str.l = 0;
+				g_str.m = g_kseq->name.l + g_kseq->comment.l + g_kseq->seq.l + g_kseq->qual.l + 4;
+				kroundup32(g_str.m);
+				g_str.s = (char*)realloc(g_str.s, g_str.m);
+				for (i = 0; i < g_kseq->name.l; ++i)
+					g_str.s[g_str.l++] = g_kseq->name.s[i];
+				g_str.s[g_str.l++] = '\t';
+				for (i = 0; i < g_kseq->seq.l; ++i)
+					g_str.s[g_str.l++] = g_kseq->seq.s[i];
+				g_str.s[g_str.l++] = '\t';
+				for (i = 0; i < g_kseq->qual.l; ++i)
+					g_str.s[g_str.l++] = g_kseq->qual.s[i];
+				g_str.s[g_str.l++] = '\t';
+				for (i = 0; i < g_kseq->comment.l; ++i)
+					g_str.s[g_str.l++] = g_kseq->comment.s[i];
+				g_str.s[g_str.l++] = '\0';
+			} else {
+				g_str.l = 0;
+				if (g_str.s) g_str.s[0] = '\0';
+			}
+		}
 		buf = g_str.s;
 		if (c >= 0 || buf[0] != '\0') {	/* normal record */
 			if (isrecord) {
