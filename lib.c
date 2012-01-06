@@ -113,7 +113,7 @@ int getrec(char **pbuf, int *pbufsize, int isrecord)	/* get next input record */
 	uschar saveb0;
 	int bufsize = *pbufsize, savebufsize = bufsize;
 
-	return bio_getrec(pbuf, pbufsize, isrecord);
+	if (bio_fmt != BIO_NULL) return bio_getrec(pbuf, pbufsize, isrecord);
 
 	if (firsttime) {
 		firsttime = 0;

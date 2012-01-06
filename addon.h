@@ -3,12 +3,12 @@
 
 /* do not change these values! */
 #define BIO_NULL -1
-#define BIO_HDR  0
-#define BIO_BED  1
-#define BIO_SAM  2
-#define BIO_VCF  3
-#define BIO_GFF  4
-#define BIO_SEQ  5
+#define BIO_HDR   0
+#define BIO_BED   1
+#define BIO_SAM   2
+#define BIO_VCF   3
+#define BIO_GFF   4
+#define BIO_FASTX 5
 
 #define BIO_SHOW_HDR 0x1
 

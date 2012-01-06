@@ -11,7 +11,7 @@ static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memo
 	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", NULL},
 	{"vcf", "chrom", "pos", "id", "ref", "alt", "qual", "filter" "info", NULL},
 	{"gff", "seqname", "source", "feature", "start", "end", "score", "filter", "strand", "group", "attribute", NULL},
-	{"seq", "name", "seq", "qual", NULL},
+	{"fastx", "name", "seq", "qual", NULL},
 	{NULL}
 };
 
@@ -224,7 +224,7 @@ getrec_start:
 			}
 			setfval(fnrloc, 0.0);
 		}
-		if (bio_fmt != BIO_SEQ) {
+		if (bio_fmt != BIO_FASTX) {
 			c = ks_getuntil(g_kseq->f, **RS, &g_str, &dret);
 		} else {
 			c = kseq_read(g_kseq);
