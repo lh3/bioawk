@@ -18,6 +18,8 @@ int bio_get_fmt(const char *s);
 int bio_skip_hdr(const char *r);
 void bio_set_colnm(void);
 
+int bio_getrec(char **pbuf, int *psize, int isrecord);
+
 /* The following explains how to add a new function. 1) Add a function index
  * (e.g. #define BIO_FFOO 102) in addon.h. The integer index must be larger than
  * 14 in the current awk implementation (see also macros starting with "F"

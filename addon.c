@@ -16,6 +16,10 @@ static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memo
 
 static const char *tab_delim = "nyyyyn", *hdr_chr = "\0#@##\0";
 
+/************************
+ * Setting column names *
+ ************************/
+
 static void set_colnm_aux(const char *p, int col)
 {
 	const char *q;
@@ -76,6 +80,10 @@ void bio_set_colnm()
 		if (tab_delim[bio_fmt] == 'y') *FS = *OFS = "\t";
 	}
 }
+
+/**********************
+ * Built-in functions *
+ **********************/
 
 static char comp_tab[] = {
 	  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,
@@ -139,4 +147,111 @@ Cell *bio_func(int f, Cell *x, Node **a)
 	}
 	// else: never happens
 	return y;
+}
+
+/************************
+ * getrec() replacement *
+ ************************/
+
+#include <zlib.h> /* FIXME: it would be better to drop this dependency... */
+#include "kseq.h"
+KSEQ_INIT(gzFile, gzread)
+
+static gzFile g_fp;
+static kseq_t *g_kseq;
+static int g_firsttime = 1, g_is_stdin = 0;
+static kstring_t g_str;
+
+int bio_getrec(char **pbuf, int *psize, int isrecord)
+{
+	extern Awkfloat *ARGC;
+	extern int argno;
+	extern char *file;
+	extern Cell **fldtab;
+
+	int i, c, saveb0, dret, savesize = *psize;
+	char *p, *buf = *pbuf;
+	if (g_firsttime) { /* mimicing initgetrec() in lib.c */
+		g_firsttime = 0;
+		for (i = 1; i < *ARGC; i++) {
+			p = getargv(i); /* find 1st real filename */
+			if (p == NULL || *p == '\0') {  /* deleted or zapped */
+				argno++;
+				continue;
+			}
+			if (!isclvar(p)) {
+				setsval(lookup("FILENAME", symtab), p);
+				goto getrec_start;
+			}
+			setclvar(p);	/* a commandline assignment before filename */
+			argno++;
+		}
+		g_fp = gzdopen(fileno(stdin), "r");	/* no filenames, so use stdin */
+		g_kseq = kseq_init(g_fp);
+		g_is_stdin = 1;
+	}
+
+getrec_start:
+	if (isrecord) {
+		donefld = 0; /* these are defined in lib.c */
+		donerec = 1;
+	}
+	saveb0 = buf[0];
+	buf[0] = 0; /* this is effective at the end of file */
+	while (argno < *ARGC || g_is_stdin) {
+		if (g_kseq == 0) { /* have to open a new file */
+			file = getargv(argno);
+			if (file == NULL || *file == '\0') { /* deleted or zapped */
+				argno++;
+				continue;
+			}
+			if (isclvar(file)) {	/* a var=value arg */
+				setclvar(file);
+				argno++;
+				continue;
+			}
+			*FILENAME = file;
+			if (*file == '-' && *(file+1) == '\0') {
+				g_fp = gzdopen(fileno(stdin), "r");
+				g_kseq = kseq_init(g_fp);
+				g_is_stdin = 1;
+			} else {
+				if ((g_fp = gzopen(file, "r")) == NULL)
+					FATAL("can't open file %s", file);
+				g_kseq = kseq_init(g_fp);
+				g_is_stdin = 0;
+			}
+			setfval(fnrloc, 0.0);
+		}
+		c = ks_getuntil(g_kseq->f, '\n', &g_str, &dret);
+		buf = g_str.s;
+		if (c >= 0 || buf[0] != '\0') {	/* normal record */
+			if (isrecord) {
+				if (freeable(fldtab[0]))
+					xfree(fldtab[0]->sval);
+				fldtab[0]->sval = buf;	/* buf == record */
+				fldtab[0]->tval = REC | STR | DONTFREE;
+				if (is_number(fldtab[0]->sval)) {
+					fldtab[0]->fval = atof(fldtab[0]->sval);
+					fldtab[0]->tval |= NUM;
+				}
+			}
+			setfval(nrloc, nrloc->fval+1);
+			setfval(fnrloc, fnrloc->fval+1);
+			*pbuf = g_str.s;
+			*psize = g_str.l;
+			return 1;
+		}
+		/* EOF arrived on this file; set up next */
+		if (!g_is_stdin) {
+			kseq_destroy(g_kseq);
+			gzclose(g_fp);
+		}
+		g_fp = 0; g_kseq = 0;
+		argno++;
+	}
+	buf[0] = saveb0;
+	*pbuf = buf;
+	*psize = savesize;
+	return 0;	/* true end of file */
 }
