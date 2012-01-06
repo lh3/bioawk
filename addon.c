@@ -166,11 +166,11 @@ static kstring_t g_str;
 int bio_getrec(char **pbuf, int *psize, int isrecord)
 {
 	extern Awkfloat *ARGC;
-	extern int argno;
+	extern int argno, recsize;
 	extern char *file;
 	extern Cell **fldtab;
 
-	int i, c, saveb0, dret, savesize = *psize;
+	int i, c, saveb0, dret, bufsize = *psize, savesize = *psize;
 	char *p, *buf = *pbuf;
 	if (g_firsttime) { /* mimicing initgetrec() in lib.c */
 		g_firsttime = 0;
@@ -250,8 +250,9 @@ getrec_start:
 				if (g_str.s) g_str.s[0] = '\0';
 			}
 		}
-		buf = g_str.s;
-		if (c >= 0 || buf[0] != '\0') {	/* normal record */
+		adjbuf(&buf, &bufsize, g_str.l + 1, recsize, 0, "bio_getrec");
+		memcpy(buf, g_str.s, g_str.l + 1);
+		if (c >= 0) {	/* normal record */
 			if (isrecord) {
 				if (freeable(fldtab[0]))
 					xfree(fldtab[0]->sval);
@@ -264,8 +265,8 @@ getrec_start:
 			}
 			setfval(nrloc, nrloc->fval+1);
 			setfval(fnrloc, fnrloc->fval+1);
-			*pbuf = g_str.s;
-			*psize = g_str.l;
+			*pbuf = buf;
+			*psize = bufsize;
 			return 1;
 		}
 		/* EOF arrived on this file; set up next */
