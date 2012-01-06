@@ -87,17 +87,17 @@ void bio_set_colnm()
  **********************/
 
 static char comp_tab[] = {
-	  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,
-	 16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,
-	 32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
-	 48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+	  0,   1,	2,	 3,	  4,   5,	6,	 7,	  8,   9,  10,	11,	 12,  13,  14,	15,
+	 16,  17,  18,	19,	 20,  21,  22,	23,	 24,  25,  26,	27,	 28,  29,  30,	31,
+	 32,  33,  34,	35,	 36,  37,  38,	39,	 40,  41,  42,	43,	 44,  45,  46,	47,
+	 48,  49,  50,	51,	 52,  53,  54,	55,	 56,  57,  58,	59,	 60,  61,  62,	63,
 	 64, 'T', 'V', 'G', 'H', 'E', 'F', 'C', 'D', 'I', 'J', 'M', 'L', 'K', 'N', 'O',
-	'P', 'Q', 'Y', 'S', 'A', 'A', 'B', 'W', 'X', 'R', 'Z',  91,  92,  93,  94,  95,
+	'P', 'Q', 'Y', 'S', 'A', 'A', 'B', 'W', 'X', 'R', 'Z',	91,	 92,  93,  94,	95,
 	 64, 't', 'v', 'g', 'h', 'e', 'f', 'c', 'd', 'i', 'j', 'm', 'l', 'k', 'n', 'o',
 	'p', 'q', 'y', 's', 'a', 'a', 'b', 'w', 'x', 'r', 'z', 123, 124, 125, 126, 127
 };
 
-#define tempfree(x)   if (istemp(x)) tfree(x); else
+#define tempfree(x)	  if (istemp(x)) tfree(x); else
 
 Cell *bio_func(int f, Cell *x, Node **a)
 {
@@ -145,7 +145,30 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			tmp = comp_tab[(int)buf[i]], buf[i] = comp_tab[(int)buf[l-1-i]], buf[l-1-i] = tmp;
 		if (l&1) buf[l>>1] = comp_tab[(int)buf[l>>1]];
 		setsval(y, buf);
+	} else if (f == BIO_FGC) {
+		char *buf = getsval(x);
+		int i, l, gc = 0;
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i)
+				if (buf[i] == 'g' || buf[i] == 'c' ||
+					buf[i] == 'G' || buf[i] == 'C')
+					gc++;
+			sprintf(buf, "%f", (Awkfloat)gc / (Awkfloat)l);
+			setsval(y, buf);
+		}
+	} else if (f == BIO_FMEANQUAL) {
+		char *buf = getsval(x);
+		int i, l, total_qual = 0;
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l>>1; ++i)
+				total_qual += buf[i] - 33;
+			sprintf(buf, "%f", (Awkfloat)total_qual / (Awkfloat)l);
+			setsval(y, buf);
+		}
 	}
+	
 	// else: never happens
 	return y;
 }
@@ -176,7 +199,7 @@ int bio_getrec(char **pbuf, int *psize, int isrecord)
 		g_firsttime = 0;
 		for (i = 1; i < *ARGC; i++) {
 			p = getargv(i); /* find 1st real filename */
-			if (p == NULL || *p == '\0') {  /* deleted or zapped */
+			if (p == NULL || *p == '\0') {	/* deleted or zapped */
 				argno++;
 				continue;
 			}
@@ -187,7 +210,7 @@ int bio_getrec(char **pbuf, int *psize, int isrecord)
 			setclvar(p);	/* a commandline assignment before filename */
 			argno++;
 		}
-		g_fp = gzdopen(fileno(stdin), "r");	/* no filenames, so use stdin */
+		g_fp = gzdopen(fileno(stdin), "r"); /* no filenames, so use stdin */
 		g_kseq = kseq_init(g_fp);
 		g_is_stdin = 1;
 	}
