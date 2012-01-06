@@ -127,7 +127,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			setfval(y, 0.0);
 		} else {
 			z = execute(a[1]->nnext);
-			setfval(y, (Awkfloat)((long)getfval(x) | (long)getfval(z)));
+			setfval(y, (Awkfloat)((long)getfval(x) ^ (long)getfval(z)));
 			tempfree(z);
 		}
 	} else if (f == BIO_FREVERSE) {
