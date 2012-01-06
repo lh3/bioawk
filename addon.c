@@ -154,8 +154,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 				if (buf[i] == 'g' || buf[i] == 'c' ||
 					buf[i] == 'G' || buf[i] == 'C')
 					gc++;
-			sprintf(buf, "%f", (Awkfloat)gc / (Awkfloat)l);
-			setsval(y, buf);
+			setfval(y, (Awkfloat)gc / l);
 		}
 	} else if (f == BIO_FMEANQUAL) {
 		char *buf = getsval(x);
@@ -164,8 +163,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 		if (l) { /* don't try for empty strings */
 			for (i = 0; i < l>>1; ++i)
 				total_qual += buf[i] - 33;
-			sprintf(buf, "%f", (Awkfloat)total_qual / (Awkfloat)l);
-			setsval(y, buf);
+			setfval(y, (Awkfloat)total_qual / l);
 		}
 	}
 	
