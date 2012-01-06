@@ -273,7 +273,7 @@ getrec_start:
 			kseq_destroy(g_kseq);
 			gzclose(g_fp);
 		}
-		g_fp = 0; g_kseq = 0;
+		g_fp = 0; g_kseq = 0; g_is_stdin = 0;
 		argno++;
 	}
 	buf[0] = saveb0;
