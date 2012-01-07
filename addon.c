@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "awk.h"
 
 int bio_flag = 0, bio_fmt = BIO_NULL;
@@ -24,12 +25,24 @@ static const char *tab_delim = "nyyyyyn", *hdr_chr = "\0#@##\0\0";
 static void set_colnm_aux(const char *p, int col)
 {
 	const char *q;
+	char *r = 0;
 	Cell *x;
-	for (q = p; *q; ++q)
-		if (!isdigit(*q)) break;
-	if (*q == 0) return; /* do not set if string p is an integer */
-	if ((x = lookup(p, symtab)) != NULL)
-		x->tval = NUM, x->fval = col;
+	for (q = p; *q; ++q) /* test if there are punctuations */
+		if (ispunct(*q) && *q != '_') break;
+	if (*q || isdigit(*p)) { /* there are punctuations or the first is digit */
+		char *qq;
+		r = malloc(strlen(p) + 2);
+		if (isdigit(*p)) {
+			*r = '_';
+			strcpy(r + 1, p);
+		} else strcpy(r, p);
+		for (qq = r; *qq; ++qq)
+			if (ispunct(*qq)) *qq = '_';
+		q = r;
+	} else q = p;
+	if ((x = lookup(q, symtab)) != NULL) /* do not add if not appear in the program */
+		setfval(x, (Awkfloat)col);
+	if (r) free(r);
 }
 
 int bio_get_fmt(const char *s)
