@@ -122,7 +122,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			setfval(y, 0.0);
 		} else {
 			z = execute(a[1]->nnext);
-			setfval(y, (Awkfloat)((long)getfval(x) & (long)getfval(z))); // FIXME: does (long) always work???
+			setfval(y, (Awkfloat)((long)getfval(x) & (long)getfval(z))); /* FIXME: does (long) always work??? */
 			tempfree(z);
 		}
 	} else if (f == BIO_FOR) {
@@ -190,15 +190,13 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			int i, l, thres, cnt = 0;
 			buf = getsval(x);
 			l = strlen(buf);
-			z = execute(a[1]->nnext); // threshold
+			z = execute(a[1]->nnext); /* threshold */
 			thres = (int)(getfval(z) + .499);
 			for (i = 0; i < l; ++i)
 				if (buf[i] - 33 >= thres) ++cnt;
 			setfval(y, (Awkfloat)cnt);
 		}
-	}
-	
-	// else: never happens
+	} /* else: never happens */
 	return y;
 }
 
