@@ -151,16 +151,18 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			tmp = buf[i], buf[i] = buf[l-1-i], buf[l-1-i] = tmp;
 		setsval(y, buf);
 	} else if (f == BIO_FREVCOMP) {
-		char *buf = getsval(x);
+		char *buf;
 		int i, l, tmp;
+		buf = getsval(x);
 		l = strlen(buf);
 		for (i = 0; i < l>>1; ++i)
 			tmp = comp_tab[(int)buf[i]], buf[i] = comp_tab[(int)buf[l-1-i]], buf[l-1-i] = tmp;
 		if (l&1) buf[l>>1] = comp_tab[(int)buf[l>>1]];
 		setsval(y, buf);
 	} else if (f == BIO_FGC) {
-		char *buf = getsval(x);
+		char *buf;
 		int i, l, gc = 0;
+		buf = getsval(x);
 		l = strlen(buf);
 		if (l) { /* don't try for empty strings */
 			for (i = 0; i < l; ++i)
@@ -170,13 +172,29 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			setfval(y, (Awkfloat)gc / l);
 		}
 	} else if (f == BIO_FMEANQUAL) {
-		char *buf = getsval(x);
+		char *buf;
 		int i, l, total_qual = 0;
+		buf = getsval(x);
 		l = strlen(buf);
 		if (l) { /* don't try for empty strings */
-			for (i = 0; i < l>>1; ++i)
+			for (i = 0; i < l; ++i)
 				total_qual += buf[i] - 33;
 			setfval(y, (Awkfloat)total_qual / l);
+		}
+	} else if (f == BIO_FQUALCOUNT) {
+		if (a[1]->nnext == 0) {
+			WARNING("xor requires two arguments; returning 0.0");
+			setfval(y, 0.0);
+		} else {
+			char *buf;
+			int i, l, thres, cnt = 0;
+			buf = getsval(x);
+			l = strlen(buf);
+			z = execute(a[1]->nnext); // threshold
+			thres = (int)(getfval(z) + .499);
+			for (i = 0; i < l; ++i)
+				if (buf[i] - 33 >= thres) ++cnt;
+			setfval(y, (Awkfloat)cnt);
 		}
 	}
 	

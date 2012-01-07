@@ -78,6 +78,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "or",		BIO_FOR,	BLTIN },
 	{ "print",	PRINT,		PRINT },
 	{ "printf",	PRINTF,		PRINTF },
+	{ "qualcount",	BIO_FQUALCOUNT,	BLTIN },
 	{ "rand",	FRAND,		BLTIN },
 	{ "return",	RETURN,		RETURN },
 	{ "revcomp",BIO_FREVCOMP, BLTIN },
@@ -93,7 +94,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "tolower",	FTOLOWER,	BLTIN },
 	{ "toupper",	FTOUPPER,	BLTIN },
 	{ "while",	WHILE,		WHILE },
-	{ "xor",	BIO_FXOR,	BLTIN },
+	{ "xor",	BIO_FXOR,	BLTIN }
 };
 
 #define	RET(x)	{ if(dbg)printf("lex %s\n", tokname(x)); return(x); }
