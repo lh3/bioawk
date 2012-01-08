@@ -43,7 +43,7 @@ typedef	unsigned char uschar;
 #	define	dprintf(x)
 #endif
 
-/* comple with -D_FS_TAB to have tab be default for FS, OFS
+/* comple with -D_FS_TAB to have tab be default for FS, OFS */
 #ifdef _FS_TAB
 #   define DEFAULT_FS "\t"
 #else
