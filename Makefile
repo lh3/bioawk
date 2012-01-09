@@ -44,6 +44,9 @@ SHIP = README FIXES $(SOURCE) ytab[ch].bak makefile  \
 awk:	ytab.o $(OFILES)
 	$(CC) $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o awk -lm -lz
 
+tawk:	ytab.o $(OFILES)
+	$(CC) -D_FS_TAB $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o tawk -lm -lz
+
 $(OFILES):	awk.h ytab.h proto.h addon.h
 
 ytab.o:	awk.h proto.h awkgram.y
