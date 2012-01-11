@@ -74,10 +74,10 @@ void syminit(void)	/* initialize symbol table with builtin vars */
 	nullloc = setsymtab("$zero&null", "", 0.0, NUM|STR|CON|DONTFREE, symtab);
 	nullnode = celltonode(nullloc, CCON);
 
-	fsloc = setsymtab("FS", " ", 0.0, STR|DONTFREE, symtab);
+	fsloc = setsymtab("FS", DEFAULT_FS, 0.0, STR|DONTFREE, symtab);
 	FS = &fsloc->sval;
 	RS = &setsymtab("RS", "\n", 0.0, STR|DONTFREE, symtab)->sval;
-	OFS = &setsymtab("OFS", " ", 0.0, STR|DONTFREE, symtab)->sval;
+	OFS = &setsymtab("OFS", DEFAULT_FS, 0.0, STR|DONTFREE, symtab)->sval;
 	ORS = &setsymtab("ORS", "\n", 0.0, STR|DONTFREE, symtab)->sval;
 	OFMT = &setsymtab("OFMT", "%.6g", 0.0, STR|DONTFREE, symtab)->sval;
 	CONVFMT = &setsymtab("CONVFMT", "%.6g", 0.0, STR|DONTFREE, symtab)->sval;
