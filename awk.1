@@ -15,6 +15,10 @@ awk \- pattern-directed scanning and processing language
 .SH SYNOPSIS
 .B awk
 [
+.BI \-c
+.I fmt
+]
+[
 .BI \-F
 .I fs
 ]
@@ -73,6 +77,37 @@ The
 .IR fs
 option defines the input field separator to be the regular expression
 .IR fs.
+.PP
+The
+.B \-c
+.IR fmt
+option specifies the input format and is specific to bioawk. The behavior
+of bioawk may vary depending on the value of
+.IR fmt .
+When
+.I fmt
+is
+.IR header " or " hdr ,
+bioawk parses named columns. It automatically adds variables whose names are
+taken from the first line and values from the column index. Special characters
+are converted to a underscore. When
+.I fmt
+is
+.IR sam , " vcf" , " bed " or " gff" ,
+it sets predefined column names. Users may check out the predefined column names by
+.B -c
+.IR help .
+When
+.I fmt
+is
+.IR fastx ,
+bioawk will parse the input FASTA or FASTQ file into a TAB-delimited format first
+with each line consisting of sequence name, sequence, quality and comments, and
+then sets column names. Note that when
+.B -c
+.I fmt
+is in use, the input file can be optionally gzip'ed.
+
 .PP
 An input line is normally made up of fields separated by white space,
 or by regular expression
@@ -405,6 +440,41 @@ and after the last.
 and
 .B END
 do not combine with other patterns.
+
+.PP
+In addition to the above, bioawk also adds more functions:
+.TF length
+.TP
+.BI reverse( s ) 
+reverse string
+.I s
+.TP
+.BI revcomp( s )
+reverse complement a nucleotide string
+.I s
+in the IUB encoding.
+.TP
+.BI trimq( qual , " beg" , " end" , " param" )
+trim quality string
+.I qual
+in the Sanger scale using Richard Mott's algorithm (used in Phred). The
+beginning and ending positions are written to
+.IR beg " and " end ,
+respectively. The positions are 1-based as in
+.BR substr() .
+The last arguement
+.I param
+is the single parameter used in the algorithm, which is optional and defaults 0.05.
+.TP
+.BI and( x , " y" )
+bit AND operation (& in C)
+.TP
+.BI or( x , " y" )
+bit OR operation (| in C)
+.TP
+.BI xor( x , " y" )
+bit XOR operation (^ in C)
+
 .PP
 Variable names with special meanings:
 .TF FILENAME

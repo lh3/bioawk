@@ -213,7 +213,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			if (s > max) max = s, beg = tmp, end = i + 1;
 			if (s < 0) s = 0, tmp = i + 1;
 		}
-		if (u) { setfval(u, beg); tempfree(u); }
+		if (u) { setfval(u, beg + 1); tempfree(u); } /* 1-based position; as substr() is 1-based. */
 		if (v) { setfval(v, end); tempfree(v); }
 	} else if (f == BIO_FQUALCOUNT) {
 		if (a[1]->nnext == 0) {
