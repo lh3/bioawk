@@ -561,11 +561,9 @@ in the IUB encoding.
 trim quality string
 .I qual
 in the Sanger scale using Richard Mott's algorithm (used in Phred). The
-beginning and ending positions are written to
+0-based beginning and ending positions are written to
 .IR beg " and " end ,
-respectively. The positions are 1-based as in
-.BR substr() .
-The last arguement
+respectively. The last arguement
 .I param
 is the single parameter used in the algorithm, which is optional and defaults 0.05.
 .TP
