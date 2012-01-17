@@ -93,6 +93,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "system",	FSYSTEM,	BLTIN },
 	{ "tolower",	FTOLOWER,	BLTIN },
 	{ "toupper",	FTOUPPER,	BLTIN },
+	{ "trimq",	BIO_FTRIMQ,	BLTIN },
 	{ "while",	WHILE,		WHILE },
 	{ "xor",	BIO_FXOR,	BLTIN }
 };

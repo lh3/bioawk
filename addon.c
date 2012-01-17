@@ -1,3 +1,4 @@
+#include <math.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -110,6 +111,8 @@ static char comp_tab[] = {
 	'p', 'q', 'y', 's', 'a', 'a', 'b', 'w', 'x', 'r', 'z', 123, 124, 125, 126, 127
 };
 
+static float q_int2real[128];
+
 #define tempfree(x)	  if (istemp(x)) tfree(x); else
 
 Cell *bio_func(int f, Cell *x, Node **a)
@@ -181,6 +184,37 @@ Cell *bio_func(int f, Cell *x, Node **a)
 				total_qual += buf[i] - 33;
 			setfval(y, (Awkfloat)total_qual / l);
 		}
+	} else if (f == BIO_FTRIMQ) {
+		char *buf;
+		double thres = 0.05, s, max;
+		int i, l, tmp, beg, end;
+		Cell *u = 0, *v = 0;
+		if (a[1]->nnext) {
+			u = execute(a[1]->nnext); /* begin */
+			if (a[1]->nnext->nnext) {
+				v = execute(a[1]->nnext->nnext); /* end */
+				if (a[1]->nnext->nnext->nnext) {
+					z = execute(a[1]->nnext->nnext->nnext);
+					thres = getfval(z); /* user defined threshold */
+					tempfree(z);
+				}
+			}
+		}
+		buf = getsval(x);
+		l = strlen(buf);
+		if (q_int2real[0] == 0.) /* to initialize */
+			for (i = 0; i < 128; ++i)
+				q_int2real[i] = pow(10., -(i - 33) / 10.);
+		for (i = 0, beg = tmp = 0, end = l, s = max = 0.; i < l; ++i) {
+			int q = buf[i];
+			if (q < 36) q = 36;
+			if (q > 127) q = 127;
+			s += thres - q_int2real[q];
+			if (s > max) max = s, beg = tmp, end = i + 1;
+			if (s < 0) s = 0, tmp = i + 1;
+		}
+		if (u) { setfval(u, beg); tempfree(u); }
+		if (v) { setfval(v, end); tempfree(v); }
 	} else if (f == BIO_FQUALCOUNT) {
 		if (a[1]->nnext == 0) {
 			WARNING("xor requires two arguments; returning 0.0");
