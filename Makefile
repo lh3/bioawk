@@ -22,7 +22,7 @@
 # THIS SOFTWARE.
 # ****************************************************************/
 
-CFLAGS = -g -Wall -O2 -ansi
+CFLAGS = -g -Wall -O2
 
 CC = gcc
 
