@@ -13,7 +13,7 @@ static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memo
 	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", NULL},
 	{"vcf", "chrom", "pos", "id", "ref", "alt", "qual", "filter", "info", NULL},
 	{"gff", "seqname", "source", "feature", "start", "end", "score", "filter", "strand", "group", "attribute", NULL},
-	{"fastx", "name", "seq", "qual", NULL},
+	{"fastx", "name", "seq", "qual", "comment", NULL},
 	{NULL}
 };
 
