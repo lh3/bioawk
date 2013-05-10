@@ -39,13 +39,13 @@ LISTING = awk.h proto.h awkgram.y lex.c b.c main.c maketab.c parse.c \
 	lib.c run.c tran.c addon.c
 
 SHIP = README FIXES $(SOURCE) ytab[ch].bak makefile  \
-	 awk.1
+	 bioawk.1
 
-awk:	ytab.o $(OFILES)
-	$(CC) $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o awk -lm -lz
+bioawk:	ytab.o $(OFILES)
+	$(CC) $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o bioawk -lm -lz
 
-tawk:	ytab.o $(OFILES)
-	$(CC) -D_FS_TAB $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o tawk -lm -lz
+bioawkt:	ytab.o $(OFILES)
+	$(CC) -D_FS_TAB $(CFLAGS) ytab.o $(OFILES) $(ALLOC) -o bioawkt -lm -lz
 
 $(OFILES):	awk.h ytab.h proto.h addon.h
 
@@ -65,4 +65,4 @@ names:
 	@echo $(LISTING)
 
 clean:
-	rm -fr a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda awk ytab.* proctab.c *.dSYM
+	rm -fr a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda bioawk bioawkt ytab.* proctab.c *.dSYM
