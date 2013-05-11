@@ -232,9 +232,9 @@ Cell *bio_func(int f, Cell *x, Node **a)
 		}
 	} else if (f == BIO_FFASTX) {
 		if (a[1]->nnext == 0) {
-			FATAL("fastxf requires at least two arguments");
+			FATAL("fastx requires at least two arguments");
 		} else {
-		  char *buf, *name, *seq, *qual;
+			char *buf, *name, *seq, *qual;
 			int bufsz=3*recsize;
 			int has_qual;
 			z = execute(a[1]->nnext);
@@ -256,6 +256,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 				sprintf(buf, "@%s\n%s\n+\n%s", name, seq, qual); 
 			}
 			setsval(y, buf);
+			free(buf);
 		}
 	} /* else: never happens */
 	return y;
