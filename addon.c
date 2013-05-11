@@ -230,6 +230,34 @@ Cell *bio_func(int f, Cell *x, Node **a)
 				if (buf[i] - 33 >= thres) ++cnt;
 			setfval(y, (Awkfloat)cnt);
 		}
+	} else if (f == BIO_FFASTX) {
+		if (a[1]->nnext == 0) {
+			FATAL("fastx requires at least two arguments");
+		} else {
+			char *buf, *name, *seq, *qual;
+			int bufsz=3*recsize;
+			int has_qual;
+			z = execute(a[1]->nnext);
+			if ((has_qual = a[1]->nnext->nnext != 0)) {
+				y = execute(a[1]->nnext->nnext);
+				qual = getsval(y);
+			}
+
+			if ((buf = (char *) malloc(bufsz)) == NULL)
+				FATAL("out of memory in fastx");
+
+			name = getsval(x);
+			seq = getsval(z);
+			if (!has_qual) {
+				sprintf(buf, ">%s\n%s", name, seq);
+			} else {
+				if (strlen(seq) != strlen(qual))
+					WARNING("fastx arguments seq and qual are not same length");
+				sprintf(buf, "@%s\n%s\n+\n%s", name, seq, qual); 
+			}
+			setsval(y, buf);
+			free(buf);
+		}
 	} /* else: never happens */
 	return y;
 }

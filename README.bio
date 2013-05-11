@@ -2,39 +2,42 @@ Bioawk is an extension to Brian Kernighan's awk acquired from [1], adding the
 support of several common biological data formats, including optionally gzip'ed
 BED, GFF, SAM, VCF, FASTA/Q and TAB-delimited formats with the column names. It
 also adds a few built-in functions including, as of now, and(), or(), xor(),
-reverse() and revcomp(). The following are a few examples demonstrating the new
-functionality:
+reverse(), revcomp(), and fastx(). The following are a few examples demonstrating 
+the new functionality:
 
 1. Extract unmapped reads without header:
 
-   awk -c sam 'and($flag,4)' aln.sam.gz
+   awk -c sam 'and($flag, 4)' aln.sam.gz
 
 2. Extract mapped reads with header:
 
-   awk -c sam -H '!and($flag,4)'
+   awk -c sam -H '!and($flag, 4)'
 
 3. Reverse complement FASTA:
 
-   awk -c fastx '{print ">"$name;print revcomp($seq)}' seq.fa.gz
+   awk -c fastx '{print fastx($name, revcomp($seq))}' seq.fa.gz
 
 4. Create FASTA from SAM (uses revcomp if FLAG & 16)
 
    samtools view aln.bam | \
-      awk -c sam '{s=$seq; if(and($flag, 16)) {s=revcomp($seq)} print ">"$qname"\n"s}'
+      awk -c sam '{s=$seq; if(and($flag, 16)) {s=revcomp($seq)} print fastx($qname, s)}'
 
-5. Get the %GC from FASTA:
+5. Get the %GC table from FASTA:
 
-   awk -c fastx '{print ">"$name;print gc($seq)}' seq.fa.gz
+   awk -c fastx '{print $name, gc($seq)}' seq.fa.gz
 
-6. Get the mean Phred quality score from FASTQ:
+6. Get the mean Phred quality score table from FASTQ:
 
-   awk -c fastx '{print ">"$name;print meanqual($qual)}' seq.fq.gz
+   awk -c fastx '{print $name, meanqual($qual)}' seq.fq.gz
 
 7. Take column name from the first line (where "age" appears in the first line
    of input.txt):
 
    awk -c header '{print $age}' input.txt
 
+8. Use awk's redirection to split a FASTA file by sequence lengths.
+
+   awk -c fastx '{if (length($seq) < 35) {print fastx($name, $seq) > "short.fasta"} else {print fastx($name, $seq) > "long.fasta"}}' seq.fq.gz
 
 Note that when "-c" is not specified and the new built-in functions are not
 used, bioawk should behave exactly the same as the original BWK awk. At least
