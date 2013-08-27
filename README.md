@@ -2,8 +2,8 @@
 
 Bioawk is an extension to [Brian Kernighan's awk][1], adding the support of
 several common biological data formats, including optionally gzip'ed BED, GFF,
-SAM, VCF, FASTA/Q and TAB-delimited formats with the column names. It also adds
-a few built-in functions and an command line option to use TAB as the
+SAM, VCF, FASTA/Q and TAB-delimited formats with column names. It also adds a
+few built-in functions and an command line option to use TAB as the
 input/output delimiter. When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.
 
