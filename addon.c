@@ -217,7 +217,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 		if (v) { setfval(v, end); tempfree(v); }
 	} else if (f == BIO_FQUALCOUNT) {
 		if (a[1]->nnext == 0) {
-			WARNING("xor requires two arguments; returning 0.0");
+			WARNING("qualcount requires two arguments; returning 0.0");
 			setfval(y, 0.0);
 		} else {
 			char *buf;
