@@ -1,7 +1,7 @@
 #ifndef ADDON_H
 #define ADDON_H
 
-/* do not change these values! */
+/* do not change these values, as they are tied to col_def[][] in addon.c */
 #define BIO_NULL -1
 #define BIO_HDR   0
 #define BIO_BED   1

@@ -43,13 +43,7 @@ typedef	unsigned char uschar;
 #	define	dprintf(x)
 #endif
 
-/* comple with -D_FS_TAB to have tab be default for FS, OFS */
-#ifdef _FS_TAB
-#   define DEFAULT_FS "\t"
-#else
-#   define DEFAULT_FS " "
-#endif
-
+#define DEFAULT_FS " "
 
 extern int	compile_time;	/* 1 if compiling, 0 if running */
 extern int	safe;		/* 0 => unsafe, 1 => safe */

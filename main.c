@@ -57,13 +57,14 @@ int	safe	= 0;	/* 1 => "safe" mode */
 int main(int argc, char *argv[])
 {
 	const char *fs = NULL;
+	char tmp[16];
 	
 	setlocale(LC_CTYPE, "");
 	setlocale(LC_NUMERIC, "C"); /* for parsing cmdline & prog */
 	cmdname = argv[0];
 	if (argc == 1) {
 		fprintf(stderr, 
-		  "usage: %s [-F fs] [-v var=value] [-c fmt] [-H] [-f progfile | 'prog'] [file ...]\n", 
+		  "usage: %s [-F fs] [-v var=value] [-c fmt] [-tH] [-f progfile | 'prog'] [file ...]\n", 
 		  cmdname);
 		exit(1);
 	}
@@ -119,6 +120,10 @@ int main(int argc, char *argv[])
 			}
 			if (fs == NULL || *fs == '\0')
 				WARNING("field separator FS is empty");
+			break;
+		case 't':
+			strcpy(tmp, "FS=\\t");  setclvar(tmp);
+			strcpy(tmp, "OFS=\\t"); setclvar(tmp);
 			break;
 		case 'v':	/* -v a=1 to be done NOW.  one -v for each */
 			if (argv[1][2] != 0) {  /* arg is -vsomething */
