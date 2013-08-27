@@ -164,8 +164,11 @@ int main(int argc, char *argv[])
 			WARNING("unknown option %s ignored", argv[1]);
 			break;
 		}
-		argc--;
-		argv++;
+		if ((argv[1][1] == 't' || argv[1][1] == 'H') && argv[1][2] != 0) { /* dealing with for example "-tc help" */
+			char *p;
+			for (p = &argv[1][2]; *p; ++p) *(p-1) = *p;
+			*(p-1) = *p;
+		} else --argc, ++argv;
 	}
 	/* argv[1] is now the first argument */
 	if (npfile == 0) {	/* no -f; first argument is program */
