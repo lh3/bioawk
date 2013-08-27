@@ -62,4 +62,4 @@ names:
 	@echo $(LISTING)
 
 clean:
-	rm -fr a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda awk ytab.* proctab.c *.dSYM
+	rm -fr a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda awk bioawk ytab.* proctab.c *.dSYM
