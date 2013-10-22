@@ -72,7 +72,6 @@ See `awk.1`.
 7. Translate nucleotide into protein sequence
  
         bioawk -c fastx '{print ">"$name;print translate($seq)}' seq.fa.gz
-
 can also use different translation tables.  To translate using the
 bactera/archaea code:
 
