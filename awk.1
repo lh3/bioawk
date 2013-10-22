@@ -548,6 +548,15 @@ is in use, the input file can be optionally gzip'ed.
 Bioawk also adds more built-in functions:
 .TF length
 .TP
+.BI gc( s )
+return the GC-content of a nucleotide string
+.I s
+.TP
+.BI meanqual( s )
+calculate the mean quality score from a string
+.I s
+that is using Sanger fastq encoding for phred scores.
+.TP
 .BI reverse( s ) 
 reverse string
 .I s
@@ -556,6 +565,14 @@ reverse string
 reverse complement a nucleotide string
 .I s
 in the IUB encoding.
+.TP
+.BI translate( s , " table" )
+translate nucleotide sequence
+.I s
+into its amino acid counterpart.  The 
+.I table
+parameter is optional, if not given the standard (code 1) translation table is used.
+Returns the translation of the nucleotide sequence.
 .TP
 .BI trimq( qual , " beg" , " end" , " param" )
 trim quality string

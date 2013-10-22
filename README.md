@@ -69,6 +69,16 @@ See `awk.1`.
 
         grep -v ^## in.vcf | bioawk -tc hdr '{print $foo,$bar}'
 
+7. Translate nucleotide into protein sequence
+ 
+        bioawk -c fastx '{print ">"$name;print translate($seq)}' seq.fa.gz
+
+can also use different translation tables.  To translate using the
+bactera/archaea code:
+
+        bioawk -c fastx '{print ">"$name;print translate($seq, 11)}' seq.fa.gz
+
+
 
 ###Potential limitations
 
