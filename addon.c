@@ -225,12 +225,12 @@ char bio_lookup_codon(char *dna, int table)
 void bio_translate(char *dna, char *out, int table)
 {
     switch(table) {
+        case 6:
         case 7:
-        case 8:
+        case 16:
         case 17:
         case 18:
         case 19:
-        case 20:
             WARNING("Translation table %d does not exist. Setting to 1\n", table);
             table = 0;
         default:
