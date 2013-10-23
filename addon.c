@@ -233,11 +233,13 @@ void bio_translate(char *dna, char *out, int table)
         case 19:
             WARNING("Translation table %d does not exist. Setting to 1\n", table);
             table = 0;
+            break;
         default:
             if(table > 24) {
                 WARNING("Translation table %d does not exist. Setting to 1\n", table);
                 table = 0;
             }
+            break;
     }
     
     int i;
