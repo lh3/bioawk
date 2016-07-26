@@ -177,7 +177,7 @@ Cell *bio_func(int f, Cell *x, Node **a)
 	} else if (f == BIO_FMAXQUAL) {
 		char *buf;
 		int i, l = 0;
-		int total_qual = 0;
+		int total_qual = -150;
 		buf = getsval(x);
 		l = strlen(buf);
 		if (l) { /* don't try for empty strings */
