@@ -188,6 +188,22 @@ Cell *bio_func(int f, Cell *x, Node **a)
 	} else if (f == BIO_FMEANQUAL) {
 		char *buf;
 		int i, l, total_qual = 0;
+		double tmp, tmp_qual = 0;
+		buf = getsval(x);
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i){
+				tmp = (double)buf[i] - 33;
+				tmp_qual += pow(10, (tmp / -10));
+				total_qual += buf[i] - 33;
+
+			}
+			setfval(y, (Awkfloat)(-10 * log10(tmp_qual / l)));
+			//setfval(y, (Awkfloat)total_qual / l);
+		}
+	} else if (f == BIO_FMEDIANQUAL) {
+		char *buf;
+		int i, l, total_qual = 0;
 		buf = getsval(x);
 		l = strlen(buf);
 		if (l) { /* don't try for empty strings */

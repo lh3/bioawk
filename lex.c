@@ -74,6 +74,7 @@ Keyword keywords[] ={	/* keep sorted: binary searched */
 	{ "match",	MATCHFCN,	MATCHFCN },
 	{ "maxqual",	BIO_FMAXQUAL,		BLTIN },
 	{ "meanqual",	BIO_FMEANQUAL,		BLTIN },
+	{ "medianqual",	BIO_FMEDIANQUAL,		BLTIN },
 	{ "minqual",	BIO_FMINQUAL,		BLTIN },
 	{ "next",	NEXT,		NEXT },
 	{ "nextfile",	NEXTFILE,	NEXTFILE },
