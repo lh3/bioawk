@@ -7,6 +7,9 @@ few built-in functions and an command line option to use TAB as the
 input/output delimiter. When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.
 
+The original awk requires a YACC-compatible parser generator (e.g. Byacc or
+Bison). Bioawk further depends on [zlib][zlib] so as to work with gzip'd files.
+
 ###New functionality
 
 #####Command line option `-t`
@@ -85,3 +88,4 @@ See `awk.1`.
 
 
 [1]: http://www.cs.princeton.edu/~bwk/btl.mirror/
+[zlib]: http://zlib.net
