@@ -41,6 +41,8 @@ int bio_getrec(char **pbuf, int *psize, int isrecord);
 #define BIO_FMEANQUAL 204
 #define BIO_FQUALCOUNT 205
 #define BIO_FTRIMQ    206
+#define BIO_FARITHMEANQUAL 207
+
 
 
 struct Cell;

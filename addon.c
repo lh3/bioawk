@@ -230,6 +230,18 @@ Cell *bio_func(int f, Cell *x, Node **a)
 				if (buf[i] - 33 >= thres) ++cnt;
 			setfval(y, (Awkfloat)cnt);
 		}
+	} else if (f == BIO_FARITHMEANQUAL) {
+		char *buf;
+		int i, l = 0;
+        double total_qual = 0.0;
+		buf = getsval(x);
+        /*printf("%s \n", buf);*/
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i)
+				total_qual += pow(10, -((double)(buf[i] - 33) / 10) );
+			setfval(y, (Awkfloat)(-10 * log10(total_qual / l)) );
+		}
 	} /* else: never happens */
 	return y;
 }
