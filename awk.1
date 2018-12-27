@@ -7,16 +7,21 @@
 .fi
 .ft 1
 ..
-awk
-.TH AWK 1
+bioawk
+.TH BIOAWK 1
 .CT 1 files prog_other
 .SH NAME
-awk \- pattern-directed scanning and processing language
+bioawk \- pattern-directed scanning and processing language for biological formats
 .SH SYNOPSIS
-.B awk
+.B bioawk
 [
 .BI \-F
 .I fs
+|
+.BI \-c
+{
+.I hdr,gff,vcf,sam,fastx
+}
 ]
 [
 .BI \-v
@@ -32,7 +37,7 @@ awk \- pattern-directed scanning and processing language
 .I file ...
 ]
 .SH DESCRIPTION
-.I Awk
+.I Bioawk
 scans each input
 .I file
 for lines that match any of a set of patterns specified literally in
@@ -557,6 +562,21 @@ calculate the mean quality score from a string
 .I s
 that is using Sanger fastq encoding for phred scores.
 .TP
+.BI medianqual( s )
+calculate the median quality score from a string
+.I s
+that is using Sanger fastq encoding for phred scores.
+.TP
+.BI maxqual( s )
+calculate the max quality score from a string
+.I s
+that is using Sanger fastq encoding for phred scores.
+.TP
+.BI minqual( s )
+calculate the min quality score from a string
+.I s
+that is using Sanger fastq encoding for phred scores.
+.TP
 .BI reverse( s ) 
 reverse string
 .I s
@@ -569,7 +589,7 @@ in the IUB encoding.
 .BI translate( s , " table" )
 translate nucleotide sequence
 .I s
-into its amino acid counterpart.  The 
+into its amino acid counterpart.  The
 .I table
 parameter is optional, if not given the standard (code 1) translation table is used.
 Returns the translation of the nucleotide sequence.
