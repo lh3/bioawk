@@ -1,0 +1,4 @@
+*.o
+.*.swp
+maketab.dSYM/
+**/.DS_Store

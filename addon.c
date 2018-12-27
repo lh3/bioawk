@@ -318,7 +318,34 @@ Cell *bio_func(int f, Cell *x, Node **a)
 					gc++;
 			setfval(y, (Awkfloat)gc / l);
 		}
+	} else if (f == BIO_FMAXQUAL) {
+		char *buf;
+		int i, l = 0;
+		int total_qual = -150;
+		buf = getsval(x);
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i)
+				total_qual = fmax(total_qual,(buf[i] - 33));
+			setfval(y, total_qual );
+		}
 	} else if (f == BIO_FMEANQUAL) {
+		char *buf;
+		int i, l, total_qual = 0;
+		double tmp, tmp_qual = 0;
+		buf = getsval(x);
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i){
+				tmp = (double)buf[i] - 33;
+				tmp_qual += pow(10, (tmp / -10));
+				total_qual += buf[i] - 33;
+
+			}
+			setfval(y, (Awkfloat)(-10 * log10(tmp_qual / l)));
+			//setfval(y, (Awkfloat)total_qual / l);
+		}
+	} else if (f == BIO_FMEDIANQUAL) {
 		char *buf;
 		int i, l, total_qual = 0;
 		buf = getsval(x);
@@ -327,6 +354,17 @@ Cell *bio_func(int f, Cell *x, Node **a)
 			for (i = 0; i < l; ++i)
 				total_qual += buf[i] - 33;
 			setfval(y, (Awkfloat)total_qual / l);
+		}
+	} else if (f == BIO_FMINQUAL) {
+		char *buf;
+		int i, l = 0;
+		int total_qual = 150;
+		buf = getsval(x);
+		l = strlen(buf);
+		if (l) { /* don't try for empty strings */
+			for (i = 0; i < l; ++i)
+				total_qual = fmin(total_qual,(buf[i] - 33));
+			setfval(y, total_qual);
 		}
 	} else if (f == BIO_FTRIMQ) {
 		char *buf;
