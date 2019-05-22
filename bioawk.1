@@ -617,7 +617,7 @@ reverse complement a nucleotide string
 .I s
 in the IUB encoding.
 .TP
-.BI translate( s , " table" )
+\fBtranslate(\fIs\fR [\fB, \fItable\^\fR]\fB)\fR
 translate nucleotide sequence
 .I s
 into its amino acid counterpart.  The
@@ -625,7 +625,7 @@ into its amino acid counterpart.  The
 parameter is optional, if not given the standard (code 1) translation table is used.
 Returns the translation of the nucleotide sequence.
 .TP
-.BI trimq( qual , " beg" , " end" , " param" )
+\fBtrimq(\fIqual\fB, \fIbeg\fR, \fIend\fR [\fB, \fIparam\^\fR]\fB)\fR
 trim quality string
 .I qual
 in the Sanger scale using Richard Mott's algorithm (used in Phred). The
