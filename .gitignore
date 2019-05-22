@@ -2,3 +2,8 @@
 .*.swp
 maketab.dSYM/
 **/.DS_Store
+a.out
+maketab
+proctab.c
+ytab.c
+ytab.h
