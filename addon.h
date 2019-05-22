@@ -31,9 +31,9 @@ int bio_getrec(char **pbuf, int *psize, int isrecord);
 #define BIO_FAND      101
 #define BIO_FOR       102
 #define BIO_FXOR      103
-#define BIO_FLSHIFT   104 /* to add */
-#define BIO_FRSHIFT   105 /* to add */
-#define BIO_FCOMPL    106 /* to add */
+#define BIO_FLSHIFT   104
+#define BIO_FRSHIFT   105
+#define BIO_FCOMPL    106
 
 #define BIO_FREVERSE  201
 #define BIO_FREVCOMP  202
