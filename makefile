@@ -42,7 +42,7 @@ YACC = bison -d -y
 OFILES = b.o main.o parse.o proctab.o tran.o lib.o run.o lex.o addon.o
 
 SOURCE = awk.h ytab.c ytab.h proto.h awkgram.y lex.c b.c main.c \
-	maketab.c parse.c lib.c run.c tran.c proctab.c addon.c
+	maketab.c parse.c lib.c run.c tran.c proctab.c addon.c kseq.h
 
 LISTING = awk.h proto.h awkgram.y lex.c b.c main.c maketab.c parse.c \
 	lib.c run.c tran.c 
