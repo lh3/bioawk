@@ -10,7 +10,7 @@ int bio_flag = 0, bio_fmt = BIO_NULL;
 static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memory efficient. Shouldn't matter. */
 	{"header", NULL},
 	{"bed", "chrom", "start", "end", "name", "score", "strand", "thickstart", "thickend", "rgb", "blockcount", "blocksizes", "blockstarts", NULL},
-	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", NULL},
+	{"sam", "qname", "flag", "rname", "pos", "mapq", "cigar", "rnext", "pnext", "tlen", "seq", "qual", "tags", NULL},
 	{"vcf", "chrom", "pos", "id", "ref", "alt", "qual", "filter", "info", NULL},
 	{"gff", "seqname", "source", "feature", "start", "end", "score", "strand", "frame", "attribute", NULL},
 	{"fastx", "name", "seq", "qual", "comment", NULL},
