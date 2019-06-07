@@ -104,5 +104,5 @@ bactera/archaea code:
    "still reachable". To some extent, these are not memory leaks.
 
 
-[1]: http://www.cs.princeton.edu/~bwk/btl.mirror/
+[1]: https://github.com/onetrueawk/awk
 [zlib]: http://zlib.net
