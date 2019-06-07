@@ -80,6 +80,14 @@ bactera/archaea code:
 
         bioawk -c fastx '{print ">"$name;print translate($seq, 11)}' seq.fa.gz
 
+8. Filter a sam file based on tags:
+
+        bioawk -c sam '{split($tags, a, " "); \
+                        for (i in a) { \
+                            split(a[i], b, ":"); \
+                            tgs[b[1]]=b[3] \
+                        } \
+                        if(tgs["NM"] < 3) print }' alignments.sam
 
 
 ### Potential limitations
