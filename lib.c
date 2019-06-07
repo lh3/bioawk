@@ -705,7 +705,7 @@ int isclvar(const char *s)	/* is s of form var=something ? */
 	for ( ; *s; s++)
 		if (!(isalnum((uschar) *s) || *s == '_'))
 			break;
-	return *s == '=' && s > os && *(s+1) != '=';
+	return *s == '=' && s > os;
 }
 
 /* strtod is supposed to be a proper test of what's a valid number */
