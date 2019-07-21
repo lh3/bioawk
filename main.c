@@ -22,7 +22,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
 ****************************************************************/
 
-const char	*version = "version 20190617";
+const char	*version = "version 20190717";
 
 #define DEBUG
 #include <stdio.h>
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	/*signal(SIGSEGV, segvcatch); experiment */
 
 	srand_seed = 1;
-	srand(srand_seed);
+	srandom((unsigned long) srand_seed);
 
 	yyin = NULL;
 	symtab = makesymtab(NSYMTAB/NSYMTAB);

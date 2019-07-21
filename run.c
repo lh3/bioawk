@@ -521,7 +521,7 @@ Cell *awkdelete(Node **a, int n)	/* a[0] is symtab, a[1] is list of subscripts *
 	}
 	if (!isarr(x))
 		return True;
-	if (a[1] == 0) {	/* delete the elements, not the table */
+	if (a[1] == NULL) {	/* delete the elements, not the table */
 		freesymtab(x);
 		x->tval &= ~STR;
 		x->tval |= ARR;
@@ -607,7 +607,7 @@ Cell *matchop(Node **a, int n)	/* ~ and match() */
 	}
 	x = execute(a[1]);	/* a[1] = target text */
 	s = getsval(x);
-	if (a[0] == 0)		/* a[1] == 0: already-compiled reg expr */
+	if (a[0] == NULL)	/* a[1] == 0: already-compiled reg expr */
 		i = (*mf)((fa *) a[2], s);
 	else {
 		y = execute(a[2]);	/* a[2] = regular expr */
@@ -723,7 +723,7 @@ Cell *gettemp(void)	/* get a tempcell */
 			FATAL("out of space for temporaries");
 		for(i = 1; i < 100; i++)
 			tmps[i-1].cnext = &tmps[i];
-		tmps[i-1].cnext = 0;
+		tmps[i-1].cnext = NULL;
 	}
 	x = tmps;
 	tmps = x->cnext;
@@ -758,18 +758,18 @@ Cell *substr(Node **a, int nnn)		/* substr(a[0], a[1], a[2]) */
 	int k, m, n;
 	char *s;
 	int temp;
-	Cell *x, *y, *z = 0;
+	Cell *x, *y, *z = NULL;
 
 	x = execute(a[0]);
 	y = execute(a[1]);
-	if (a[2] != 0)
+	if (a[2] != NULL)
 		z = execute(a[2]);
 	s = getsval(x);
 	k = strlen(s) + 1;
 	if (k <= 1) {
 		tempfree(x);
 		tempfree(y);
-		if (a[2] != 0) {
+		if (a[2] != NULL) {
 			tempfree(z);
 		}
 		x = gettemp();
@@ -782,7 +782,7 @@ Cell *substr(Node **a, int nnn)		/* substr(a[0], a[1], a[2]) */
 	else if (m > k)
 		m = k;
 	tempfree(y);
-	if (a[2] != 0) {
+	if (a[2] != NULL) {
 		n = (int) getfval(z);
 		tempfree(z);
 	} else
@@ -963,7 +963,7 @@ int format(char **pbuf, int *pbufsize, const char *s, Node *a)	/* printf-like co
 			break;
 		case 'c':
 			if (isnum(x)) {
-				if (getfval(x))
+				if ((int)getfval(x))
 					sprintf(p, fmt, (int) getfval(x));
 				else {
 					*p++ = '\0'; /* explicit null byte */
@@ -1223,7 +1223,7 @@ Cell *pastat(Node **a, int n)	/* a[0] { a[1] } */
 {
 	Cell *x;
 
-	if (a[0] == 0)
+	if (a[0] == NULL)
 		x = execute(a[1]);
 	else {
 		x = execute(a[0]);
@@ -1260,9 +1260,9 @@ Cell *dopa2(Node **a, int n)	/* a[0], a[1] { a[2] } */
 
 Cell *split(Node **a, int nnn)	/* split(a[0], a[1], a[2]); a[3] is type */
 {
-	Cell *x = 0, *y, *ap;
+	Cell *x = NULL, *y, *ap;
 	char *s, *origs;
-	char *fs, *origfs = NULL;
+	char *fs = NULL, *origfs = NULL;
 	int sep;
 	char *t, temp, num[50];
 	int n, tempstat, arg3type;
@@ -1270,7 +1270,7 @@ Cell *split(Node **a, int nnn)	/* split(a[0], a[1], a[2]); a[3] is type */
 	y = execute(a[0]);	/* source string */
 	origs = s = strdup(getsval(y));
 	arg3type = ptoi(a[3]);
-	if (a[2] == 0)		/* fs string */
+	if (a[2] == NULL)		/* fs string */
 		fs = getsval(fsloc);
 	else if (arg3type == STRING) {	/* split(str,arr,"string") */
 		x = execute(a[2]);
@@ -1420,7 +1420,7 @@ Cell *ifstat(Node **a, int n)	/* if (a[0]) a[1]; else a[2] */
 	if (istrue(x)) {
 		tempfree(x);
 		x = execute(a[1]);
-	} else if (a[2] != 0) {
+	} else if (a[2] != NULL) {
 		tempfree(x);
 		x = execute(a[2]);
 	}
@@ -1472,7 +1472,7 @@ Cell *forstat(Node **a, int n)	/* for (a[0]; a[1]; a[2]) a[3] */
 	x = execute(a[0]);
 	tempfree(x);
 	for (;;) {
-		if (a[1]!=0) {
+		if (a[1]!=NULL) {
 			x = execute(a[1]);
 			if (!istrue(x)) return(x);
 			else tempfree(x);
@@ -1555,7 +1555,7 @@ Cell *bltin(Node **a, int n)	/* builtin functions. a[0] is type, a[1] is arg lis
 	case FCOS:
 		u = cos(getfval(x)); break;
 	case FATAN:
-		if (nextarg == 0) {
+		if (nextarg == NULL) {
 			WARNING("atan2 requires two arguments; returning 1.0");
 			u = 1.0;
 		} else {
@@ -1583,8 +1583,10 @@ Cell *bltin(Node **a, int n)	/* builtin functions. a[0] is type, a[1] is arg lis
 		}
 		break;
 	case FRAND:
-		/* in principle, rand() returns something in 0..RAND_MAX */
-		u = (Awkfloat) (rand() % RAND_MAX) / RAND_MAX;
+		/* random() returns numbers in [0..2^31-1]
+		 * in order to get a number in [0, 1), divide it by 2^31
+		 */
+		u = (Awkfloat) random() / (0x7fffffffL + 0x1UL);
 		break;
 	case FSRAND:
 		if (isrec(x))	/* no argument provided */
@@ -1592,7 +1594,7 @@ Cell *bltin(Node **a, int n)	/* builtin functions. a[0] is type, a[1] is arg lis
 		else
 			u = getfval(x);
 		tmp = u;
-		srand((unsigned int) u);
+		srandom((unsigned long) u);
 		u = srand_seed;
 		srand_seed = tmp;
 		break;
@@ -1633,7 +1635,7 @@ Cell *bltin(Node **a, int n)	/* builtin functions. a[0] is type, a[1] is arg lis
 	tempfree(x);
 	x = gettemp();
 	setfval(x, u);
-	if (nextarg != 0) {
+	if (nextarg != NULL) {
 		WARNING("warning: function has too many arguments");
 		for ( ; nextarg; nextarg = nextarg->nnext)
 			execute(nextarg);
@@ -1647,7 +1649,7 @@ Cell *printstat(Node **a, int n)	/* print a[0] */
 	Cell *y;
 	FILE *fp;
 
-	if (a[1] == 0)	/* a[1] is redirection operator, a[2] is file */
+	if (a[1] == NULL)	/* a[1] is redirection operator, a[2] is file */
 		fp = stdout;
 	else
 		fp = redirect(ptoi(a[1]), a[2]);
@@ -1660,7 +1662,7 @@ Cell *printstat(Node **a, int n)	/* print a[0] */
 		else
 			fputs(getsval(ofsloc), fp);
 	}
-	if (a[1] != 0)
+	if (a[1] != NULL)
 		fflush(fp);
 	if (ferror(fp))
 		FATAL("write error on %s", filename(fp));
@@ -1717,7 +1719,7 @@ FILE *openfile(int a, const char *us)
 {
 	const char *s = us;
 	int i, m;
-	FILE *fp = 0;
+	FILE *fp = NULL;
 
 	if (*s == '\0')
 		FATAL("null file name in print or getline");
@@ -1732,7 +1734,7 @@ FILE *openfile(int a, const char *us)
 		return NULL;
 
 	for (i=0; i < nfiles; i++)
-		if (files[i].fp == 0)
+		if (files[i].fp == NULL)
 			break;
 	if (i >= nfiles) {
 		struct files *nf;
@@ -1848,7 +1850,7 @@ Cell *sub(Node **a, int nnn)	/* substitute command */
 		FATAL("out of memory in sub");
 	x = execute(a[3]);	/* target string */
 	t = getsval(x);
-	if (a[0] == 0)		/* 0 => a[1] is already-compiled regexpr */
+	if (a[0] == NULL)	/* 0 => a[1] is already-compiled regexpr */
 		pfa = (fa *) a[1];	/* regular expression */
 	else {
 		y = execute(a[1]);
@@ -1888,7 +1890,7 @@ Cell *sub(Node **a, int nnn)	/* substitute command */
 		if (pb > buf + bufsz)
 			FATAL("sub result2 %.30s too big; can't happen", buf);
 		setsval(x, buf);	/* BUG: should be able to avoid copy */
-		result = True;;
+		result = True;
 	}
 	tempfree(x);
 	tempfree(y);
@@ -1911,7 +1913,7 @@ Cell *gsub(Node **a, int nnn)	/* global substitute */
 	num = 0;
 	x = execute(a[3]);	/* target string */
 	t = getsval(x);
-	if (a[0] == 0)		/* 0 => a[1] is already-compiled regexpr */
+	if (a[0] == NULL)	/* 0 => a[1] is already-compiled regexpr */
 		pfa = (fa *) a[1];	/* regular expression */
 	else {
 		y = execute(a[1]);

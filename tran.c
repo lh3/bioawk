@@ -194,7 +194,7 @@ void freesymtab(Cell *ap)	/* free a symbol table */
 			free(cp); 
 			tp->nelem--;
 		}
-		tp->tab[i] = 0;
+		tp->tab[i] = NULL;
 	}
 	if (tp->nelem != 0)
 		WARNING("can't happen: inconsistent element count freeing %s", ap->nval);
@@ -318,6 +318,7 @@ Awkfloat setfval(Cell *vp, Awkfloat f)	/* set float val of a Cell */
 	} else if (isrec(vp)) {
 		donefld = 0;	/* mark $1... invalid */
 		donerec = 1;
+		savefs();
 	} else if (vp == ofsloc) {
 		if (donerec == 0)
 			recbld();
@@ -362,6 +363,7 @@ char *setsval(Cell *vp, const char *s)	/* set string val of a Cell */
 	} else if (isrec(vp)) {
 		donefld = 0;	/* mark $1... invalid */
 		donerec = 1;
+		savefs();
 	} else if (vp == ofsloc) {
 		if (donerec == 0)
 			recbld();
