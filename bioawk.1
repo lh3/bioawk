@@ -54,7 +54,7 @@ matches the pattern.
 Each line is matched against the
 pattern portion of every pattern-action statement;
 the associated action is performed for each matched pattern.
-The file name 
+The file name
 .B \-
 means the standard input.
 Any
@@ -96,7 +96,7 @@ A pattern-action statement has the form:
 .IP
 .IB pattern " { " action " }
 .PP
-A missing 
+A missing
 .BI { " action " }
 means print the line;
 a missing pattern always matches.
@@ -231,7 +231,7 @@ the
 substring of
 .I s
 that begins at position
-.I m 
+.I m
 counted from 1.
 If no
 .IR n ,
@@ -313,7 +313,7 @@ executes
 and returns its exit status. This will be \-1 upon error,
 .IR cmd 's
 exit status upon a normal exit,
-256 + 
+256 +
 .I sig
 upon death-by-signal, where
 .I sig
@@ -372,7 +372,7 @@ Patterns are arbitrary Boolean combinations
 of regular expressions and
 relational expressions.
 Regular expressions are as in
-.IR egrep ; 
+.IR egrep ;
 see
 .IR grep (1).
 Isolated regular expressions
@@ -663,8 +663,8 @@ bit right shift operation (>> in C)
 bit complement operation (~ in C)
 
 .SH SEE ALSO
-.IR grep (1), 
-.IR lex (1), 
+.IR grep (1),
+.IR lex (1),
 .IR sed (1)
 .br
 A. V. Aho, B. W. Kernighan, P. J. Weinberger,
