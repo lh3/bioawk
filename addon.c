@@ -17,7 +17,7 @@ static const char *col_defs[][15] = { /* FIXME: this is convenient, but not memo
 	{NULL}
 };
 
-static const char *tab_delim = "nyyyyyn", *hdr_chr = "\0#@##\0\0";
+static const char *tab_delim = "nyyyynn", *hdr_chr = "\0#@##\0\0";
 
 /************************
  * Setting column names *
