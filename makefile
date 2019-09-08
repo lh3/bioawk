@@ -116,3 +116,8 @@ cleaner: testclean
 testclean:
 	cd testdir; rm -fr arnold-fixes beebe echo foo* \
 		glop glop1 glop2 lilly.diff tempbig tempsmall time
+
+testbio:
+	$(MAKE) --directory=test.bio
+
+test-all: testbio test 
