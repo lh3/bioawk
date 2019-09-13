@@ -93,7 +93,9 @@ void bio_set_colnm()
 		for (i = 0; col_defs[bio_fmt][i] != NULL; ++i)
 			set_colnm_aux(col_defs[bio_fmt][i], i);
 		if (tab_delim[bio_fmt] == 'y') *FS = *OFS = "\t";
+		if (bio_fmt == BIO_FASTX) *FS = "\037";
 	}
+	savefs();
 }
 
 /**********************
@@ -538,13 +540,13 @@ getrec_start:
 				g_str.s = (char*)realloc(g_str.s, g_str.m);
 				for (i = 0; i < g_kseq->name.l; ++i)
 					g_str.s[g_str.l++] = g_kseq->name.s[i];
-				g_str.s[g_str.l++] = '\t';
+				g_str.s[g_str.l++] = '\037';
 				for (i = 0; i < g_kseq->seq.l; ++i)
 					g_str.s[g_str.l++] = g_kseq->seq.s[i];
-				g_str.s[g_str.l++] = '\t';
+				g_str.s[g_str.l++] = '\037';
 				for (i = 0; i < g_kseq->qual.l; ++i)
 					g_str.s[g_str.l++] = g_kseq->qual.s[i];
-				g_str.s[g_str.l++] = '\t';
+				g_str.s[g_str.l++] = '\037';
 				for (i = 0; i < g_kseq->comment.l; ++i)
 					g_str.s[g_str.l++] = g_kseq->comment.s[i];
 				g_str.s[g_str.l++] = '\0';

@@ -49,7 +49,9 @@ LISTING = awk.h proto.h awkgram.y lex.c b.c main.c maketab.c parse.c \
 
 SHIP = README LICENSE FIXES $(SOURCE) ytab[ch].bak makefile  \
 	 awk.1
-
+a.out: bioawk
+	ln -s bioawk a.out
+	
 bioawk:	ytab.o $(OFILES)
 	$(CC) $(CFLAGS) -o $@ ytab.o $(OFILES) $(ALLOC)  -lm -lz
 
