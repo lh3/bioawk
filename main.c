@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 	symtab = makesymtab(NSYMTAB/NSYMTAB);
 	while (argc > 1 && argv[1][0] == '-' && argv[1][1] != '\0') {
 		if (strcmp(argv[1],"-version") == 0 || strcmp(argv[1],"--version") == 0) {
-			printf("awk %s\n", version);
+			printf("bioawk version %s\nbased on awk %s\n", BIO_VERSION, version);
 			exit(0);
 			break;
 		}

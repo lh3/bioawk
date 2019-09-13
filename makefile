@@ -21,10 +21,11 @@
 # ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 # THIS SOFTWARE.
 # ****************************************************************/
+GIT_VERSION := "$(shell git describe --abbrev=4 --dirty --always --tags)"
 
 CFLAGS = -g
 CFLAGS =
-CFLAGS = -O2
+CFLAGS = -O2 -DBIO_VERSION=\"$(GIT_VERSION)\"
 
 # compiler options
 #CC = gcc -Wall -g -Wwrite-strings
