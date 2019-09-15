@@ -37,6 +37,28 @@ bioawk \- pattern-directed scanning and processing language for biological forma
 .I file ...
 ]
 .SH DESCRIPTION
+.I bioawk 
+is an extension to Brian Kernighan's awk, adding the support for
+several common biological data formats, including optionally gzip'ed 
+.I BED
+,
+.I GFF
+,
+.I SAM
+,
+.I VCF
+,
+.I FASTA/Q
+and 
+.I TAB-delimited
+formats with column names. It also adds a
+few built-in functions and an command line option to use TAB as the
+input/output delimiter. When the new functionality is not used, bioawk is
+intended to behave exactly the same as the
+.I  awk
+.
+
+.PP
 .I Bioawk
 scans each input
 .I file
@@ -565,26 +587,24 @@ are converted to a underscore. When
 .I fmt
 is
 .IR sam , " vcf" , " bed " or " gff" ,
-it sets predefined column names. Users may check out the predefined column names by
-bed:
-	1:chrom 2:start 3:end 4:name 5:score 6:strand 7:thickstart 8:thickend 9:rgb 10:blockcount 11:blocksizes 12:blockstarts 
-sam:
-	1:qname 2:flag 3:rname 4:pos 5:mapq 6:cigar 7:rnext 8:pnext 9:tlen 10:seq 11:qual 
-vcf:
-	1:chrom 2:pos 3:id 4:ref 5:alt 6:qual 7:filter 8:info 
-gff:
-	1:seqname 2:source 3:feature 4:start 5:end 6:score 7:strand 8:frame 9:attribute 
-fastx:
-	1:name 2:seq 3:qual 4:comment
+it sets predefined column names. The column names for the different formats are as follows:
+
+.IP bed
+1:chrom 2:start 3:end 4:name 5:score 6:strand 7:thickstart 8:thickend 9:rgb 10:blockcount 11:blocksizes 12:blockstarts 
+.IP sam
+1:qname 2:flag 3:rname 4:pos 5:mapq 6:cigar 7:rnext 8:pnext 9:tlen 10:seq 11:qual 12:tags
+.IP vcf
+1:chrom 2:pos 3:id 4:ref 5:alt 6:qual 7:filter 8:info 
+.IP gff
+1:seqname 2:source 3:feature 4:start 5:end 6:score 7:strand 8:frame 9:attribute 
+.IP fastx
+1:name 2:seq 3:qual 4:comment
+.PP
+Users may check out the predefined column names by:
 .B -c
 .IR help .
-When
-.I fmt
-is
-.IR fastx ,
-bioawk will parse the input FASTA or FASTQ file into a TAB-delimited format first
-with each line consisting of sequence name, sequence, quality and comments, and
-then sets column names. Note that when
+.PP
+Note that when
 .B -c
 .I fmt
 is in use, the input file can be optionally gzip'ed.
@@ -663,6 +683,7 @@ bit right shift operation (>> in C)
 bit complement operation (~ in C)
 
 .SH SEE ALSO
+.IR awk (1),
 .IR grep (1),
 .IR lex (1),
 .IR sed (1)

@@ -21,6 +21,12 @@
 # ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 # THIS SOFTWARE.
 # ****************************************************************/
+prefix := /usr/local
+exec_prefix := $(prefix)
+bindir := $(exec_prefix)/bin
+mandir := $(prefix)/share/man
+man1dir := $(mandir)/man1
+
 GIT_VERSION := "$(shell git describe --abbrev=4 --dirty --always --tags)"
 
 CFLAGS = -g
@@ -124,3 +130,7 @@ testbio:
 	$(MAKE) --directory=test.bio
 
 test-all: testbio test 
+
+install: bioawk bioawk.1
+	install -d $< $(bindir)
+	install -d bioawk.1 $(man1dir)
