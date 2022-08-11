@@ -335,7 +335,9 @@ getrec_start:
 			}
 		}
 		adjbuf(&buf, &bufsize, g_str.l + 1, recsize, 0, "bio_getrec");
-		memcpy(buf, g_str.s, g_str.l + 1);
+		if (g_str.s) {
+			memcpy(buf, g_str.s, g_str.l + 1);
+		}
 		if (c >= 0) {	/* normal record */
 			if (isrecord) {
 				if (freeable(fldtab[0]))
